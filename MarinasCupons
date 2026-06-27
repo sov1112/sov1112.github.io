@@ -445,15 +445,22 @@
     {
       id: "nap",
       emoji: "😴",
-      title: "Guilt-Free Nap",
+      title: "Guilt Free Nap",
       desc: "Nap as long as you want. I'll keep things quiet and have snacks ready when you wake up.",
       maxUses: 99,
     },
     {
-      id: "love-letter",
+      id: "love letter",
       emoji: "💌",
       title: "Handwritten Love Letter",
       desc: "A real, handwritten letter about exactly why you're everything to me.",
+      maxUses: 3,
+    },
+    {
+      id: "Tickle Me IG",
+      emoji: "ᶠᶸᶜᵏᵧₒᵤ!",
+      title: "You can tickle me for like 30 seconds or somthing",
+      desc: "I won't fight back but I may Kick you...",
       maxUses: 3,
     },
   ];
