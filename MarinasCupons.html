@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>💌 Marina's Coupon Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --rose:    #E8758A;
+    --blush:   #F5C5CE;
+    --petal:   #FDE8EC;
+    --cream:   #FFF9F5;
+    --mauve:   #8B4560;
+    --dusk:    #5C2D42;
+    --gold:    #D4A24C;
+    --ink:     #2E1A24;
+    --muted:   #9E7088;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    text-align: center;
+    padding: 56px 24px 40px;
+    position: relative;
+  }
+  .header-eyebrow {
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem;
+    color: var(--rose);
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 700;
+    color: var(--dusk);
+    line-height: 1.1;
+  }
+  header h1 em {
+    font-style: italic;
+    color: var(--rose);
+  }
+  .header-sub {
+    margin-top: 12px;
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 380px;
+    margin-inline: auto;
+  }
+  .hearts-row {
+    margin-top: 18px;
+    font-size: 1.3rem;
+    letter-spacing: 6px;
+    opacity: 0.6;
+  }
+
+  /* ─── GRID ─── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 28px;
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ─── COUPON CARD ─── */
+  .coupon {
+    background: #fff;
+    border-radius: 16px;
+    border: 1.5px solid var(--blush);
+    box-shadow: 0 2px 18px -4px rgba(140,45,80,0.10);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    position: relative;
+  }
+  .coupon:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px -6px rgba(140,45,80,0.18);
+  }
+  .coupon.used {
+    opacity: 0.55;
+    filter: grayscale(35%);
+  }
+
+  /* perforated left stripe */
+  .coupon-stripe {
+    background: var(--rose);
+    width: 10px;
+    flex-shrink: 0;
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    border-radius: 16px 0 0 16px;
+  }
+
+  /* tear holes on stripe */
+  .coupon-stripe::before,
+  .coupon-stripe::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px; height: 14px;
+    background: var(--cream);
+    border-radius: 50%;
+  }
+  .coupon-stripe::before { top: -7px; }
+  .coupon-stripe::after  { bottom: -7px; }
+
+  .coupon-body {
+    padding: 24px 20px 20px 26px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .coupon-emoji {
+    font-size: 2rem;
+    line-height: 1;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .coupon-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: var(--dusk);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .coupon-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.55;
+    flex: 1;
+  }
+
+  .coupon-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--blush);
+  }
+
+  .coupon-uses {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem;
+  }
+  .coupon-uses .count {
+    color: var(--rose);
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+
+  .btn-use {
+    background: var(--rose);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    letter-spacing: 0.02em;
+  }
+  .btn-use:hover { background: var(--mauve); }
+  .btn-use:active { transform: scale(0.96); }
+  .btn-use:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  /* USED stamp */
+  .stamp {
+    position: absolute;
+    top: 18px; right: 16px;
+    background: var(--rose);
+    color: #fff;
+    font-family: 'Caveat', cursive;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 4px;
+    transform: rotate(8deg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .coupon.used .stamp { opacity: 1; }
+
+  /* ─── HISTORY PANEL ─── */
+  .history-section {
+    max-width: 1060px;
+    margin: 0 auto 60px;
+    padding: 0 24px;
+  }
+  .history-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    color: var(--dusk);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .history-list {
+    background: #fff;
+    border: 1.5px solid var(--blush);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .history-empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--muted);
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+  }
+  .history-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--petal);
+    font-size: 0.88rem;
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-item .h-emoji { font-size: 1.1rem; }
+  .history-item .h-title { font-weight: 500; color: var(--dusk); flex: 1; }
+  .history-item .h-date { color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
+
+  .btn-clear {
+    background: transparent;
+    border: 1px solid var(--blush);
+    color: var(--muted);
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-clear:hover { border-color: var(--rose); color: var(--rose); }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(44, 20, 33, 0.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+    padding: 20px;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: #fff;
+    border-radius: 20px;
+    padding: 36px 32px 28px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    transform: scale(0.92);
+    transition: transform 0.2s;
+    box-shadow: 0 20px 60px -10px rgba(92,45,66,0.3);
+  }
+  .modal-overlay.open .modal { transform: scale(1); }
+  .modal-emoji { font-size: 3rem; margin-bottom: 12px; }
+  .modal h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    color: var(--dusk);
+    margin-bottom: 8px;
+  }
+  .modal p { color: var(--muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 24px; }
+  .modal-btns { display: flex; gap: 10px; justify-content: center; }
+  .btn-confirm {
+    background: var(--rose);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-confirm:hover { background: var(--mauve); }
+  .btn-cancel {
+    background: transparent;
+    border: 1.5px solid var(--blush);
+    color: var(--muted);
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  /* footer */
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 500px) {
+    .grid { grid-template-columns: 1fr; }
+    header { padding: 40px 20px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="header-eyebrow">a little something for you 🌸</p>
+  <h1>Marina's<br><em>Coupon Book</em></h1>
+  <p class="header-sub">Redeem whenever your heart desires. Each coupon is a promise.</p>
+  <div class="hearts-row">♡ ♡ ♡</div>
+</header>
+
+<div class="grid" id="coupon-grid"></div>
+
+<section class="history-section">
+  <h2>📖 Redemption Log</h2>
+  <div class="history-list" id="history-list">
+    <p class="history-empty">No coupons redeemed yet, love ✨</p>
+  </div>
+  <button class="btn-clear" id="btn-clear">Clear history</button>
+</section>
+
+<footer>made with ♡ just for you</footer>
+
+<!-- Confirmation modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-emoji" id="modal-emoji"></div>
+    <h3 id="modal-title"></h3>
+    <p id="modal-desc"></p>
+    <div class="modal-btns">
+      <button class="btn-confirm" id="btn-confirm">Redeem 💌</button>
+      <button class="btn-cancel" id="btn-cancel">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── COUPON DEFINITIONS ──────────────────────────────────
+  const COUPONS = [
+    {
+      id: "movie-night",
+      emoji: "🎬",
+      title: "Movie Night Your Pick",
+      desc: "You choose the movie, I'll handle the snacks and zero complaints. Any genre, any length.",
+      maxUses: 5,
+    },
+    {
+      id: "your-choice",
+      emoji: "🌟",
+      title: "Your Choice",
+      desc: "A wildcard — anything you want, no questions asked. You name it, consider it done.",
+      maxUses: 4,
+    },
+    {
+      id: "massage",
+      emoji: "✨",
+      title: "30-Min Shoulder Massage",
+      desc: "No negotiating, no shortcuts. Thirty whole minutes dedicated to your shoulders and neck.",
+      maxUses: 6,
+    },
+    {
+      id: "date-night",
+      emoji: "🌙",
+      title: "Surprise Date Night",
+      desc: "Hand this over and I'll plan the entire evening — you just show up and look beautiful.",
+      maxUses: 3,
+    },
+    {
+      id: "dessert",
+      emoji: "🍰",
+      title: "Dessert of Your Choice",
+      desc: "Homemade or from your favorite spot. Sweet tooth, zero judgment.",
+      maxUses: 8,
+    },
+    {
+      id: "chores",
+      emoji: "🧹",
+      title: "I Do Your Chores",
+      desc: "Hand me a list. Dishes, laundry, vacuuming — consider it done, no grumbling.",
+      maxUses: 4,
+    },
+    {
+      id: "listen",
+      emoji: "👂",
+      title: "Vent Session",
+      desc: "Phone down, eyes on you. Talk about whatever's on your mind — I'm all ears.",
+      maxUses: 99,
+    },
+    {
+      id: "cuddle",
+      emoji: "🫂",
+      title: "Extended Cuddle Time",
+      desc: "An hour of being the little spoon, big spoon, or whichever configuration you prefer.",
+      maxUses: 99,
+    },
+    {
+      id: "cooking",
+      emoji: "🍝",
+      title: "Homemade Dinner",
+      desc: "You name the dish, I'll cook it. Even the tricky ones.",
+      maxUses: 5,
+    },
+    {
+      id: "adventure",
+      emoji: "🗺️",
+      title: "Mini Adventure",
+      desc: "A day trip or afternoon exploring somewhere new. You decide the destination.",
+      maxUses: 3,
+    },
+    {
+      id: "nap",
+      emoji: "😴",
+      title: "Guilt-Free Nap",
+      desc: "Nap as long as you want. I'll keep things quiet and have snacks ready when you wake up.",
+      maxUses: 99,
+    },
+    {
+      id: "love-letter",
+      emoji: "💌",
+      title: "Handwritten Love Letter",
+      desc: "A real, handwritten letter about exactly why you're everything to me.",
+      maxUses: 3,
+    },
+    {
+      id: "tickle",
+      emoji: "🫵",
+      title: "Tickle Me (If You Dare)",
+      desc: "I won't fight back... but I may kick you. 30 seconds, no mercy.",
+      maxUses: 3,
+    },
+  ];
+
+  // ── STATE ─────────────────────────────────────────────────
+  const STATE_KEY  = "marina-coupons-v1";
+  const HISTORY_KEY = "marina-history-v1";
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STATE_KEY)) || {}; } catch { return {}; }
+  }
+  function saveState(s) {
+    localStorage.setItem(STATE_KEY, JSON.stringify(s));
+  }
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch { return []; }
+  }
+  function saveHistory(h) {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(h));
+  }
+
+  let state   = loadState();
+  let history = loadHistory();
+
+  // ── RENDER COUPONS ────────────────────────────────────────
+  const grid = document.getElementById("coupon-grid");
+
+  function getUses(id) { return state[id] || 0; }
+
+  function renderCoupons() {
+    grid.innerHTML = "";
+    COUPONS.forEach(c => {
+      const uses      = getUses(c.id);
+      const remaining = c.maxUses === 99 ? "∞" : `${c.maxUses - uses} left`;
+      const isUsed    = c.maxUses !== 99 && uses >= c.maxUses;
+
+      const card = document.createElement("div");
+      card.className = "coupon" + (isUsed ? " used" : "");
+      card.innerHTML = `
+        <div class="coupon-stripe"></div>
+        <div class="stamp">Used up!</div>
+        <div class="coupon-body">
+          <span class="coupon-emoji">${c.emoji}</span>
+          <div class="coupon-title">${c.title}</div>
+          <div class="coupon-desc">${c.desc}</div>
+          <div class="coupon-footer">
+            <span class="coupon-uses">
+              Used <span class="count">${uses}</span> time${uses !== 1 ? "s" : ""}
+              · ${remaining}
+            </span>
+            <button class="btn-use" data-id="${c.id}" ${isUsed ? "disabled" : ""}>
+              Redeem
+            </button>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+
+    // attach redeem buttons
+    grid.querySelectorAll(".btn-use:not(:disabled)").forEach(btn => {
+      btn.addEventListener("click", () => openModal(btn.dataset.id));
+    });
+  }
+
+  // ── RENDER HISTORY ────────────────────────────────────────
+  const historyList = document.getElementById("history-list");
+
+  function renderHistory() {
+    if (history.length === 0) {
+      historyList.innerHTML = `<p class="history-empty">No coupons redeemed yet, love ✨</p>`;
+      return;
+    }
+    historyList.innerHTML = [...history].reverse().map(h => `
+      <div class="history-item">
+        <span class="h-emoji">${h.emoji}</span>
+        <span class="h-title">${h.title}</span>
+        <span class="h-date">${h.date}</span>
+      </div>
+    `).join("");
+  }
+
+  // ── MODAL ─────────────────────────────────────────────────
+  const overlay    = document.getElementById("modal-overlay");
+  const modalEmoji = document.getElementById("modal-emoji");
+  const modalTitle = document.getElementById("modal-title");
+  const modalDesc  = document.getElementById("modal-desc");
+  const btnConfirm = document.getElementById("btn-confirm");
+  const btnCancel  = document.getElementById("btn-cancel");
+
+  let pendingId = null;
+
+  function openModal(id) {
+    const c = COUPONS.find(x => x.id === id);
+    pendingId = id;
+    modalEmoji.textContent = c.emoji;
+    modalTitle.textContent = c.title;
+    modalDesc.textContent  = `Are you sure you want to redeem "${c.title}"? This will be logged.`;
+    overlay.classList.add("open");
+  }
+  function closeModal() {
+    overlay.classList.remove("open");
+    pendingId = null;
+  }
+
+  btnCancel.addEventListener("click", closeModal);
+  overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
+
+  btnConfirm.addEventListener("click", () => {
+    if (!pendingId) return;
+    const c = COUPONS.find(x => x.id === pendingId);
+
+    // update uses
+    state[pendingId] = (state[pendingId] || 0) + 1;
+    saveState(state);
+
+    // log to history
+    const now = new Date();
+    history.push({
+      id: c.id,
+      emoji: c.emoji,
+      title: c.title,
+      date: now.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" }),
+    });
+    saveHistory(history);
+
+    closeModal();
+    renderCoupons();
+    renderHistory();
+  });
+
+  // ── CLEAR HISTORY ─────────────────────────────────────────
+  document.getElementById("btn-clear").addEventListener("click", () => {
+    if (!confirm("Clear all redemption history? (Coupon use counts stay.)")) return;
+    history = [];
+    saveHistory(history);
+    renderHistory();
+  });
+
+  // ── INIT ──────────────────────────────────────────────────
+  renderCoupons();
+  renderHistory();
+</script>
+</body>
+</html>
